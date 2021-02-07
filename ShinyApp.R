@@ -9,10 +9,10 @@ ui <- fluidPage(
 
 server <- function(input, output) {
     
-    
+    source("Pre-processing.R")
     output$hist <- renderPlot({ 
         
-        no_total <- subset(mod_data_4, mod_data_4$ENERGY.SOURCE != "Total")
+        no_total <- subset(mod_data, mod_data$ENERGY.SOURCE != "Total")
         no_total$ENERGY.SOURCE <- as.factor(no_total$ENERGY.SOURCE)
         ggplot(no_total, aes(fill = ENERGY.SOURCE, y = GENERATION..Megawatthours., x = YEAR)) + 
             geom_bar(position = "fill", stat = "identity", width = 0.5) +
