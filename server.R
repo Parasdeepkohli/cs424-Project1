@@ -1,11 +1,6 @@
 library(shiny)
 library(ggplot2)
-ui <- fluidPage(
-    # *Input() functions
-    # *Output() functions
-    
-    plotOutput("hist")
-)
+
 
 server <- function(input, output) {
     
@@ -25,5 +20,3 @@ server <- function(input, output) {
     
     
 }
-
-shinyApp(ui = ui, server = server)
