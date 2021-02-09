@@ -25,4 +25,4 @@ mod_data$ENERGY.SOURCE <- factor(mod_data$ENERGY.SOURCE)
 
 # Block to change Energy Source names
 
-levels(mod_data$ENERGY.SOURCE) <- c("Coal", "GeoTh", "Hydro", "N Gas", "Nuclear", "Petrol", "Solar", "Total", "wind", "wood")
+levels(mod_data$ENERGY.SOURCE) <- c("Coal", "GeoTh", "Hydro", "N Gas", "Nuclear", "Petrol", "Solar", "Total", "Wind", "Wood")
