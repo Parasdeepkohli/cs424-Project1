@@ -1,8 +1,9 @@
 library(shiny)
 
-ui <- fluidPage(
+fluidPage(
   # *Input() functions
   # *Output() functions
   
-  plotOutput("hist")
+  plotOutput("stackedbar1"),
+  plotOutput("stackedbar2")
 )
