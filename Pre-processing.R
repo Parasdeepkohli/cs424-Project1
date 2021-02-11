@@ -29,11 +29,32 @@ levels(mod_data$ENERGY.SOURCE) <- c("Coal", "GeoTh", "Hydro", "N Gas", "Nuclear"
 
 # Block to remove total from processed data frame (for bar plots)
 
-no_total <- subset(mod_data, mod_data$ENERGY.SOURCE != "Total") # Dataframe without the total energy source
-no_total$ENERGY.SOURCE <- as.factor(no_total$ENERGY.SOURCE)
+US_total <- subset(mod_data, mod_data$ENERGY.SOURCE != "Total") # Dataframe without the total energy source
+US_total$ENERGY.SOURCE <- factor(US_total$ENERGY.SOURCE)
+US_total <- subset(US_total, US_total$STATE == "US-TOTAL") # Dataframe with records containing only US-TOTAL state
+US_total$STATE <- factor(US_total$STATE)
+US_total <- subset(US_total, US_total$TYPE.OF.PRODUCER == "Total Electric Power Industry") # Data frame with records for total industry
+US_total$TYPE.OF.PRODUCER <- factor(US_total$TYPE.OF.PRODUCER)
 
 
-# Block to generate new data frame for line charts
+# Block to generate percentage data for line chart
 
-line_data <- no_total[, c("YEAR", "ENERGY.SOURCE", "GENERATION..Megawatthours.")]
-line_data_avg <- aggregate(GENERATION..Megawatthours. ~ YEAR + ENERGY.SOURCE, data=line_data, mean)
+year_sum <- aggregate(GENERATION..Megawatthours. ~ YEAR, data=US_total, FUN = sum) # Data frame of energy produced summed by year
+c <- 1
+x <- 1
+percents <- rep(NA, 270)
+for (row in 1:nrow(US_total)){ # Loop to find percentage of every record in US_total
+  percents[row] <- (US_total[row,"GENERATION..Megawatthours."]/year_sum[x, "GENERATION..Megawatthours."]) * 100
+  # print(US_total[row, "YEAR"])
+  # print(year_sum[x, "YEAR"])
+  # print((US_total[row,"GENERATION..Megawatthours."]/year_sum[x, "GENERATION..Megawatthours."]) * 100)
+  if (c == 9){
+    c <- 1
+    x <- x + 1
+  }
+  else{
+    c <- c + 1
+  }
+}
+
+US_total$Percentages <- percents # Add vector of percentages to data frame
