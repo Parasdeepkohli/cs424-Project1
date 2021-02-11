@@ -13,10 +13,19 @@ navbarPage(
   tabPanel("Basic Visualizations", # First 40% of project in this panel
     sidebarLayout(       
       sidebarPanel(
-        selectInput(inputId = "visualization", label = "Visualization", choices = c("Bar plot", "Line chart", "Table"), selected = "Line chart"),
+        tags$head(tags$style("#stackedbar1{height:90vh !important;}
+                             #stackedbar2{height:90vh !important;}
+                             #linechart1{height:90vh !important;}
+                             #linechart2{height:90vh !important;}")),
+        selectInput(
+          inputId = "visualization", 
+          label = "Visualization", 
+          choices = c("Bar plot (amt)", "Bar plot (%)", "Line chart (amt)", "Line chart (%)", "Table"), 
+          selected = "Line chart (%)"
+          ),
         width = 2,
         conditionalPanel(
-          condition = "input.visualization == 'Line chart'",
+          condition = "input.visualization == 'Line chart (amt)' || input.visualization == 'Line chart (%)'",
           checkboxGroupInput(
             inputId = "lineSources", 
             label = "Pick the sources", 
@@ -26,16 +35,7 @@ navbarPage(
           ),
         mainPanel(
           width = 10,
-          conditionalPanel(
-            condition = "input.visualization == 'Bar plot'",
-            plotOutput("stackedbar1"),
-            plotOutput("stackedbar2")
-          ),
-        conditionalPanel(
-          condition = "input.visualization == 'Line chart'",
-          plotOutput('linechart1'),
-          plotOutput("linechart2")
-        )
+          uiOutput("PlotControl")
       )
     )
   )
