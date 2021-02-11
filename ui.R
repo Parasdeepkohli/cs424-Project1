@@ -8,12 +8,12 @@ navbarPage(
   position = "static-top",
   collapsible = TRUE,
   selected = "Basic Visualizations",
-  tabPanel(title = "About"),
+  tabPanel(title = "About"), # About page to be built here
   
-  tabPanel("Basic Visualizations",
+  tabPanel("Basic Visualizations", # First 40% of project in this panel
     sidebarLayout(       
       sidebarPanel(
-        selectInput(inputId = "visualization", label = "Visualization", choices = c("Bar plot", "Line chart", "Table")),
+        selectInput(inputId = "visualization", label = "Visualization", choices = c("Bar plot", "Line chart", "Table"), selected = "Line chart"),
         width = 2,
         conditionalPanel(
           condition = "input.visualization == 'Line chart'",
@@ -21,16 +21,22 @@ navbarPage(
             inputId = "lineSources", 
             label = "Pick the sources", 
             choices = c( "Coal", "Geo Thermal", "Hydro", "Natural Gas", "Nuclear", "Petrol", "Solar","Wind", "Wood")
+              )
             )
-          )
-        ),
-      mainPanel(
-        width = 10,
-        plotOutput("chart1"),
-        plotOutput("chart2"),
+          ),
+        mainPanel(
+          width = 10,
+          conditionalPanel(
+            condition = "input.visualization == 'Bar plot'",
+            plotOutput("stackedbar1"),
+            plotOutput("stackedbar2")
+          ),
+        conditionalPanel(
+          condition = "input.visualization == 'Line chart'",
+          plotOutput('linechart1'),
+          plotOutput("linechart2")
+        )
       )
     )
   )
-  
-
 )
