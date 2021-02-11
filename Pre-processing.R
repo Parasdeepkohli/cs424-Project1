@@ -26,3 +26,14 @@ mod_data$ENERGY.SOURCE <- factor(mod_data$ENERGY.SOURCE)
 # Block to change Energy Source names
 
 levels(mod_data$ENERGY.SOURCE) <- c("Coal", "GeoTh", "Hydro", "N Gas", "Nuclear", "Petrol", "Solar", "Total", "Wind", "Wood")
+
+# Block to remove total from processed data frame (for bar plots)
+
+no_total <- subset(mod_data, mod_data$ENERGY.SOURCE != "Total") # Dataframe without the total energy source
+no_total$ENERGY.SOURCE <- as.factor(no_total$ENERGY.SOURCE)
+
+
+# Block to generate new data frame for line charts
+
+line_data <- no_total[, c("YEAR", "ENERGY.SOURCE", "GENERATION..Megawatthours.")]
+line_data_avg <- aggregate(GENERATION..Megawatthours. ~ YEAR + ENERGY.SOURCE, data=line_data, mean)
