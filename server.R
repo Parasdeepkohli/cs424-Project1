@@ -1,18 +1,21 @@
 library(shiny)
 library(ggplot2)
+library(DT)
 
 
 function(input, output, session) {
 
     source("Pre-processing.R")
     source("Add-units.R")
+    source("Add-commas.R")
   
-    output$PlotControl <- renderUI({
+    output$VizControl <- renderUI({
       
         if (input$visualization == "Bar plot (amt)"){plotOutput("stackedbar1")}
         else if (input$visualization == "Bar plot (%)"){plotOutput("stackedbar2")}
         else if (input$visualization == "Line chart (amt)"){plotOutput("linechart1")}
         else if (input$visualization == "Line chart (%)"){plotOutput("linechart2")}
+        else if (input$visualization == "Raw table"){DT::dataTableOutput("table1")}
         
     })
 
@@ -38,7 +41,7 @@ function(input, output, session) {
                 ) +
             labs(fill = "Energy Source") +
             scale_x_continuous(name = "Year", breaks = seq(1990, 2019)) +
-            scale_y_continuous(name = "Energy produced in Millions (MWh)", breaks = seq(0, 4e9, by = 4e8), labels = c(seq(0, 400, by = 40)))
+            scale_y_continuous(name = "Energy produced (MWh)", labels = addUnits)
         
     })
 
@@ -50,13 +53,13 @@ function(input, output, session) {
             theme(
                 text=element_text(size = 15, family = 'sans'), 
                 plot.title = element_text(hjust = 0.5, face = 'bold'),
-                axis.title = element_text(size = 16),
-                legend.text = element_text(size = 18, family = 'sans'),
+                axis.title = element_text(size = 18),
+                legend.text = element_text(size = 16, family = 'sans'),
                 legend.background = element_rect(fill = "darkgrey")
                 ) +
             labs(fill = "Energy Source") +
             scale_x_continuous(name = "Year", breaks = seq(1990, 2019)) +
-            scale_y_continuous(name = "Energy produced", labels = scales::percent)
+            scale_y_continuous(name = "Energy produced by share", labels = scales::percent)
 
     })
     
@@ -77,8 +80,6 @@ function(input, output, session) {
             scale_x_continuous(name = "Year", breaks = seq(1990, 2019, by = 2)) +
             guides(color = guide_legend(override.aes = list(size = 2))) +
             scale_y_continuous(name = " Average Energy produced, in Millions (MWh)", 
-                                #breaks = seq(0, max(chosen_data$GENERATION..Megawatthours.), 
-                                #by = round(max(chosen_data$GENERATION..Megawatthours.)/10)))
                                 labels = addUnits)
         
     })
@@ -103,5 +104,17 @@ function(input, output, session) {
       
     })
     
-   
+  output$table1 = DT::renderDataTable(
+    class = 'cell-border stripe',
+    filter = 'top',
+    options = list(columnDefs = list(list(targets = c(3,4), searchable = FALSE, className = 'dt-right'))),
+    { 
+      US_total$YEAR <- factor(US_total$YEAR)
+      US_total$Percentages <- signif(US_total$Percentages, digits = 2)
+      US_total$GENERATION..Megawatthours. <- addCommas(US_total$GENERATION..Megawatthours.)
+      US_total[, c("YEAR", "ENERGY.SOURCE", "GENERATION..Megawatthours.", "Percentages")]
+      
+    }, 
+    colnames = c("Year", "Energy Source", "Energy generated (MWh)", "Percentage of total energy produced per year (%)")
+  )
 }

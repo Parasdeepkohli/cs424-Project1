@@ -20,8 +20,8 @@ navbarPage(
         selectInput(
           inputId = "visualization", 
           label = "Visualization", 
-          choices = c("Bar plot (amt)", "Bar plot (%)", "Line chart (amt)", "Line chart (%)", "Table"), 
-          selected = "Line chart (%)"
+          choices = c("Bar plot (amt)", "Bar plot (%)", "Line chart (amt)", "Line chart (%)", "Raw table"),
+          selected = "Raw table"
           ),
         width = 2,
         conditionalPanel(
@@ -36,7 +36,7 @@ navbarPage(
           ),
         mainPanel(
           width = 10,
-          uiOutput("PlotControl")
+          uiOutput("VizControl")
       )
     )
   )
