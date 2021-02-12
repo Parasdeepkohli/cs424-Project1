@@ -45,9 +45,6 @@ x <- 1
 percents <- rep(NA, 270)
 for (row in 1:nrow(US_total)){ # Loop to find percentage of every record in US_total
   percents[row] <- (US_total[row,"GENERATION..Megawatthours."]/year_sum[x, "GENERATION..Megawatthours."]) * 100
-  # print(US_total[row, "YEAR"])
-  # print(year_sum[x, "YEAR"])
-  # print((US_total[row,"GENERATION..Megawatthours."]/year_sum[x, "GENERATION..Megawatthours."]) * 100)
   if (c == 9){
     c <- 1
     x <- x + 1
@@ -58,3 +55,4 @@ for (row in 1:nrow(US_total)){ # Loop to find percentage of every record in US_t
 }
 
 US_total$Percentages <- percents # Add vector of percentages to data frame
+row.names(US_total) <- NULL
