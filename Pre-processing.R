@@ -1,4 +1,4 @@
-full_data <- read.table(file = "annual_generation_state.csv", sep = ",", header = TRUE) # This assumes the file is accessible in your working directory
+full_data <- read.table(file = "annual_generation_state.csv", sep = ",", header = TRUE, row.names = NULL) # This assumes the file is accessible in your working directory
 
 # Block to convert generation data from string to numbers
 
@@ -35,7 +35,7 @@ US_total <- subset(US_total, US_total$STATE == "US-TOTAL") # Dataframe with reco
 US_total$STATE <- factor(US_total$STATE)
 US_total <- subset(US_total, US_total$TYPE.OF.PRODUCER == "Total Electric Power Industry") # Data frame with records for total industry
 US_total$TYPE.OF.PRODUCER <- factor(US_total$TYPE.OF.PRODUCER)
-
+US_total <- US_total[, c("YEAR", "STATE", "TYPE.OF.PRODUCER", "ENERGY.SOURCE", "GENERATION..Megawatthours.")]
 
 # Block to generate percentage data for line chart
 
