@@ -5,6 +5,7 @@ library(ggplot2)
 function(input, output, session) {
 
     source("Pre-processing.R")
+    source("Add-units.R")
   
     output$PlotControl <- renderUI({
       
@@ -15,6 +16,13 @@ function(input, output, session) {
         
     })
 
+    observe({
+      updateCheckboxGroupInput(
+        session, 'lineSources', choices = c("Coal", "GeoTh", "Hydro", "N Gas", "Nuclear", "Petrol", "Solar", "Wind", "Wood"),
+        selected = if (input$all) c("Coal", "GeoTh", "Hydro", "N Gas", "Nuclear", "Petrol", "Solar", "Wind", "Wood")
+        
+      )
+    })
     
     output$stackedbar1 <- renderPlot({
         
@@ -53,12 +61,13 @@ function(input, output, session) {
     })
     
     output$linechart1 <- renderPlot({
-        
-        ggplot(US_total, aes(x = YEAR, y = GENERATION..Megawatthours., group = ENERGY.SOURCE)) +
+      
+        chosen_data <- subset(US_total, ENERGY.SOURCE %in% input$lineSources)
+        ggplot(chosen_data, aes(x = YEAR, y = GENERATION..Megawatthours., group = ENERGY.SOURCE)) +
             geom_line(aes(color = ENERGY.SOURCE), size = 1) +
             ggtitle("Amount of energy produced by source in the US by source") +
             theme(
-                text=element_text(size = 18, family = 'sans'), 
+                text=element_text(size = 18, family = 'sans'),
                 plot.title = element_text(hjust = 0.5, face = 'bold', size = 20),
                 legend.text = element_text(size = 18, family = 'sans'),
                 legend.background = element_rect(fill = "darkgrey"),
@@ -67,8 +76,10 @@ function(input, output, session) {
             labs(color = "Energy Source") +
             scale_x_continuous(name = "Year", breaks = seq(1990, 2019, by = 2)) +
             guides(color = guide_legend(override.aes = list(size = 2))) +
-            scale_y_continuous(name = " Average Energy produced, in Millions (MWh)", breaks = seq(0, 2e9, by = 2e8), labels = seq(0, 200, by = 20))
-        
+            scale_y_continuous(name = " Average Energy produced, in Millions (MWh)", 
+                                #breaks = seq(0, max(chosen_data$GENERATION..Megawatthours.), 
+                                #by = round(max(chosen_data$GENERATION..Megawatthours.)/10)))
+                                labels = addUnits)
         
     })
     
@@ -89,7 +100,6 @@ function(input, output, session) {
         scale_x_continuous(name = "Year", breaks = seq(1990, 2019, by = 2)) +
         guides(color = guide_legend(override.aes = list(size = 2))) +
         scale_y_continuous(name = " Energy produced", breaks = seq(0, 50, by = 5), labels = p )
-      
       
     })
     

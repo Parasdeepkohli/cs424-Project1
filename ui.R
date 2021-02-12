@@ -21,7 +21,7 @@ navbarPage(
           inputId = "visualization", 
           label = "Visualization", 
           choices = c("Bar plot (amt)", "Bar plot (%)", "Line chart (amt)", "Line chart (%)", "Table"), 
-          selected = "Line chart (%)"
+          selected = "Line chart (amt)"
           ),
         width = 2,
         conditionalPanel(
@@ -29,8 +29,9 @@ navbarPage(
           checkboxGroupInput(
             inputId = "lineSources", 
             label = "Pick the sources", 
-            choices = c( "Coal", "Geo Thermal", "Hydro", "Natural Gas", "Nuclear", "Petrol", "Solar","Wind", "Wood")
-              )
+            choices = c("Coal", "GeoTh", "Hydro", "N Gas", "Nuclear", "Petrol", "Solar", "Wind", "Wood")
+              ),
+          checkboxInput(inputId = 'all', label = 'All', value = TRUE)
             )
           ),
         mainPanel(
