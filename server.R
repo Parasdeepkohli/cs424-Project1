@@ -85,8 +85,8 @@ function(input, output, session) {
     
     output$linechart2 <- renderPlot({
       
-      p <- paste(seq(0, 50, by = 5), "%", sep = "")
-      ggplot(US_total, aes(x = YEAR, y = Percentages, colour = ENERGY.SOURCE)) +
+      chosen_data <- subset(US_total, ENERGY.SOURCE %in% input$lineSources)
+      ggplot(chosen_data, aes(x = YEAR, y = Percentages, colour = ENERGY.SOURCE)) +
         geom_line(size = 1) +
         ggtitle("Percentage of energy produced by source in the US by source") +
         theme(
@@ -99,7 +99,7 @@ function(input, output, session) {
         labs(color = "Energy Source") +
         scale_x_continuous(name = "Year", breaks = seq(1990, 2019, by = 2)) +
         guides(color = guide_legend(override.aes = list(size = 2))) +
-        scale_y_continuous(name = " Energy produced", breaks = seq(0, 50, by = 5), labels = p )
+        scale_y_continuous(name = " Energy produced",  labels = addUnits)
       
     })
     

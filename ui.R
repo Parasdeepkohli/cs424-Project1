@@ -21,7 +21,7 @@ navbarPage(
           inputId = "visualization", 
           label = "Visualization", 
           choices = c("Bar plot (amt)", "Bar plot (%)", "Line chart (amt)", "Line chart (%)", "Table"), 
-          selected = "Line chart (amt)"
+          selected = "Line chart (%)"
           ),
         width = 2,
         conditionalPanel(
