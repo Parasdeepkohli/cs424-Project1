@@ -56,3 +56,26 @@ for (row in 1:nrow(US_total)){ # Loop to find percentage of every record in US_t
 
 US_total$Percentages <- percents # Add vector of percentages to data frame
 row.names(US_total) <- NULL
+
+# Pre-processing block for state level data
+
+US_state <- subset(mod_data, mod_data$TYPE.OF.PRODUCER == "Total Electric Power Industry") # Data frame with records for total industry
+US_state$TYPE.OF.PRODUCER <- factor(US_state$TYPE.OF.PRODUCER)
+US_state <- US_state[, c("YEAR", "STATE", "TYPE.OF.PRODUCER", "ENERGY.SOURCE", "GENERATION..Megawatthours.")]
+US_state_final <- subset(US_state, US_state$ENERGY.SOURCE != "Total") # Total energy source not needed for visualization, only calculation
+US_state_final$ENERGY.SOURCE <- factor(US_state_final$ENERGY.SOURCE)
+state_year_sums <- subset(US_state, ENERGY.SOURCE == "Total") # Denominator for finding energy produced ratio
+state_percents <- rep(NA, nrow(US_state_final)) # Vector to store percentages
+
+for (i in 1:nrow(US_state_final)){ # Loop to find percentage energy produced per state, per year
+  
+  y <- US_state_final[i, "YEAR"]
+  st <- as.character(US_state_final[i, "STATE"])
+  energy <- US_state_final[i, "GENERATION..Megawatthours."]
+  total <- state_year_sums[state_year_sums$YEAR == y & state_year_sums$STATE == st, "GENERATION..Megawatthours."]
+  state_percents[i] <- (energy/total) * 100
+  
+}
+
+US_state_final$Percentages <- state_percents # Final state data frame with percentage production per state, per year. Ready to plot
+row.names(US_state_final) <- NULL
