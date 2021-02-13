@@ -354,7 +354,7 @@ function(input, output, session) {
     
     chosen_data <- subset(US_state_final, YEAR %in% year & STATE == st & ENERGY.SOURCE %in% sources)
     ggplot(chosen_data, aes(x = YEAR, y = GENERATION..Megawatthours., color = ENERGY.SOURCE)) +
-      ggtitle(input$zone1) +
+      ggtitle(input$zone2) +
       scale_color_manual( # Consistent color scheme between visualizations
         values = c("Coal" = "#F8766D", "GeoTh" = "#D39200","Hydro" = "#93AA00","N Gas" = "#00BA38","Nuclear" = "#00C19F","Petrol" = "#00B9E3","Solar" = "#619CFF","Wind" = "#DB72FB","Wood" = "#FF61C3"
         )) +
@@ -386,7 +386,7 @@ function(input, output, session) {
     
     chosen_data <- subset(US_state_final, YEAR %in% year & STATE == st & ENERGY.SOURCE %in% sources)
     ggplot(chosen_data, aes(x = YEAR, y = Percentages, color = ENERGY.SOURCE)) +
-      ggtitle(input$zone1) +
+      ggtitle(input$zone2) +
       scale_color_manual( # Consistent color scheme between visualizations
         values = c("Coal" = "#F8766D", "GeoTh" = "#D39200","Hydro" = "#93AA00","N Gas" = "#00BA38","Nuclear" = "#00C19F","Petrol" = "#00B9E3","Solar" = "#619CFF","Wind" = "#DB72FB","Wood" = "#FF61C3"
         )) +
@@ -570,9 +570,10 @@ function(input, output, session) {
     updateSelectInput(session, "source1", selected = "N Gas")
     updateSelectInput(session, "source2", selected = "N Gas")
     session$sendCustomMessage(type = 'testmessage',
-                              message = 'States are becoming increasingly dependent on Natural Gas for their energy needs, just like Texas! In fact, despite more than doubling production, Texas is lowering dependence on Natural Gas! Must be all the wind...')
+                              message = 'States are becoming increasingly dependent on Natural Gas for their energy needs, just like Texas was in 1990. In fact, it looks like Florida will soon take the number 1 spot!')
+
   }
   )
-  
+
 }
 
