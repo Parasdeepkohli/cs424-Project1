@@ -24,8 +24,13 @@ navbarPage(
       tags$u(tags$h3("Guide:", `style` = "font-weight:bold")),
       tags$ul(tags$li("Please use the navbar above to navigate the app", `style` = "font-size:20px"),
               tags$li("Base Visualizations: Full page dedicated to a single visualization",`style` = "font-size:20px"),
-              tags$li("Compare: Base visualizations with comparisons between states", `style` = "font-size:20px"),
-              tags$li("US map: Spread the comparisons from compare over the map of the U.S.A", `style` = "font-size:20px")) 
+              tags$li("Compare: Base visualizations with comparisons between states through filters", `style` = "font-size:20px"),
+              tags$li("US map: Inside Compare, change tabs to geographical comparison of data", `style` = "font-size:20px"),
+              tags$li("If you receive an error in Compare, it means that no data is available for that combination of filters", `style` = "font-size:20px")),
+      tags$u(tags$h3("Known bugs:", `style` = "font-weight:bold")),
+      tags$ul(tags$li("Choosing a source/year/state combination that has no corresponding value in the data returns an error", `style` = "font-size:20px"),
+              tags$li("If your choices result in a single observation, the y-ticks will be bugged and repeat the same value",`style` = "font-size:20px"))
+      
           )
           ),
   tabPanel("Basic Visualizations", # First 40% of project in this panel
@@ -47,9 +52,11 @@ navbarPage(
           checkboxGroupInput(
             inputId = "lineSources", 
             label = "Pick the sources", 
-            choices = c("Coal", "GeoTh", "Hydro", "N Gas", "Nuclear", "Petrol", "Solar", "Wind", "Wood")
+            choices = c("Coal", "GeoTh", "Hydro", "N Gas", "Nuclear", "Petrol", "Solar", "Wind", "Wood"),
               ),
-          checkboxInput(inputId = 'all', label = 'All', value = TRUE)
+          checkboxInput(inputId = 'all', label = 'All', value = TRUE),
+          tags$head(tags$script(src = "message-handler.js")),
+          actionButton(inputId = "interest1", label ="Interesting 1!")
             )
           ),
         mainPanel(
@@ -65,67 +72,100 @@ navbarPage(
       
       sidebarPanel(
         width = 2,
-        selectInput(
-          inputId = "zone1", 
-          label = "State 1", 
-          choices = c(state.name, "Washington D.C.", "US Total"),
-          selected = "US Total"
+        conditionalPanel( condition = "input.plotvmap == 'Plots & Tables'",
+          selectInput(
+            inputId = "zone1", 
+            label = "State 1", 
+            choices = sort(c(state.name, "Washington D.C.", "US Total")),
+            selected = "US Total"
+          )
         ),
         selectInput(
           inputId = "year1", 
-          label = "Year for state 1", 
-          choices = seq(1990, 2019, by = 1),
+          label = "Year 1", 
+          choices = c("(All)", seq(1990, 2019, by = 1)),
           selected = 1990
         ),
         selectInput(
           inputId = "source1", 
-          label = "Source for state 1", 
-          choices = sort(c("Coal", "GeoTh", "Hydro", "N Gas", "Nuclear", "Petrol", "Solar", "Wind", "Wood")),
+          label = "Source 1", 
+          choices = c("(All)", "Coal", "GeoTh", "Hydro", "N Gas", "Nuclear", "Petrol", "Solar", "Wind", "Wood"),
           selected = "Coal"
         ),
-    
-        tags$div("", `style`= "background-color: grey; width: 100%; height: 20px"), # Just to neatly divide the inputs for states
         
-        selectInput(
-          inputId = "zone2", 
-          label = "State 2", 
-          choices = sort(c(state.name, "Washington D.C.", "US Total")),
-          selected = "Illinois"
+        conditionalPanel( condition = "input.plotvmap == 'Plots & Tables'",
+          selectInput(
+            inputId = "zone2", 
+            label = "State 2", 
+            choices = sort(c(state.name, "Washington D.C.", "US Total")),
+            selected = "Illinois"
+          )
         ),
         selectInput(
           inputId = "year2", 
-          label = "Year for state 2", 
-          choices = seq(1990, 2019, by = 1),
+          label = "Year 2", 
+          choices = c("(All)", seq(1990, 2019, by = 1)),
           selected = 1990
         ),
         selectInput(
           inputId = "source2", 
-          label = "Source for state 2", 
-          choices = c("Coal", "GeoTh", "Hydro", "N Gas", "Nuclear", "Petrol", "Solar", "Wind", "Wood"),
+          label = "Source 2", 
+          choices = c("(All)","Coal", "GeoTh", "Hydro", "N Gas", "Nuclear", "Petrol", "Solar", "Wind", "Wood"),
           selected = "Coal"
-        )
+        ),
+        conditionalPanel( condition = "input.plotvmap == 'Plots & Tables'",
+                          actionButton(inputId = "interest2", "Interesting 2!"),
+                          actionButton(inputId = "interest3", "Interesting 3!")
+        ),
+        
+        conditionalPanel( condition = "input.plotvmap != 'Plots & Tables'",
+          tags$h5("Note: Grey means no data available"),
+          actionButton(inputId = "interest4", "Interesting 4!"),
+          actionButton(inputId = "interest5", "Interesting 5!")
+        ),
         
       ),
       mainPanel(
         
         width = 10,
-        fluidRow(
-          splitLayout(
-            cellWidths = c("33%","33%","33%"),
-            plotOutput("compare11",height = "300px"), plotOutput("compare12", height = "300px"), div(dataTableOutput("compare13"), 
-                                                                                                         style = "font-size:80%")
+        tabsetPanel( id = "plotvmap",
+          tabPanel( "Plots & Tables",
+            fluidRow(
+              splitLayout(
+                cellWidths = c("20%","20%","20%", "20%", "20%"),
+                plotOutput("compare11",height = "250px"), plotOutput("compare12", height = "250px"), 
+                plotOutput("compare13", height = "250px"), plotOutput("compare14", height = "250px"), 
+                div(dataTableOutput("compare15"), style = "font-size:60%")
+                )
+            ), 
+            fluidRow(
+              splitLayout(
+                cellWidths = c("20%","20%","20%", "20%", "20%"),
+                plotOutput("compare21",height = "250px"), plotOutput("compare22", height = "250px"), 
+                plotOutput("compare23", height = "250px"), plotOutput("compare24", height = "250px"), 
+                div(dataTableOutput("compare25"), style = "font-size:60%")
+              )
             )
-        ), 
-        fluidRow(
-          splitLayout(
-            cellWidths = c("33%","33%","33%"),
-            plotOutput("compare21",height = "300px"), plotOutput("compare22",height = "300px"), div(dataTableOutput("compare23"), 
-                                                                                                    style = "font-size:80%")
+          ), # Tab panel from Tabset ends
+          tabPanel( "US map",
+                    fluidRow(
+                      splitLayout(
+                        cellWidths = c("50%", "50%"),
+                        plotOutput("map1", height = "300px", width = "600px"),
+                        plotOutput("map2", height = "300px", width = "600px")
+                      )
+            ),
+            fluidRow(
+              splitLayout(
+                cellWidths = c("50%", "50%"),
+                plotOutput("map3", height = "300px", width = "600px"),
+                plotOutput("map4", height = "300px", width = "600px")
+              )
+            )
           )
-        )
-        
-      )
-    )
+        ) # Tabset panel ends
+      )# Main panel from sidebarLayout ends 
+    )# SidebarLayout ends
     
-  )
-)
+  ) # Table panel for Compare ends
+)# End of global navbar panel
