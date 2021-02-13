@@ -64,7 +64,7 @@ US_state$TYPE.OF.PRODUCER <- factor(US_state$TYPE.OF.PRODUCER)
 US_state <- US_state[, c("YEAR", "STATE", "TYPE.OF.PRODUCER", "ENERGY.SOURCE", "GENERATION..Megawatthours.")]
 US_state_final <- subset(US_state, US_state$ENERGY.SOURCE != "Total") # Total energy source not needed for visualization, only calculation
 US_state_final$ENERGY.SOURCE <- factor(US_state_final$ENERGY.SOURCE)
-state_year_sums <- subset(US_state, ENERGY.SOURCE == "Total") # Denominator for finding energy produced ratio
+state_year_sums <- aggregate(GENERATION..Megawatthours.~STATE + YEAR, data = US_state_final, FUN = sum) # Denominator for finding energy produced ratio
 state_percents <- rep(NA, nrow(US_state_final)) # Vector to store percentages
 
 for (i in 1:nrow(US_state_final)){ # Loop to find percentage energy produced per state, per year
