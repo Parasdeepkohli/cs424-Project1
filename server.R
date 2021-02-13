@@ -3,6 +3,7 @@ library(ggplot2)
 library(DT)
 library(scales)
 library(usmap)
+library(stringr)
 
 
 function(input, output, session) {
@@ -81,7 +82,7 @@ function(input, output, session) {
             labs(color = "Energy Source") +
             scale_x_continuous(name = "Year", breaks = seq(1990, 2019, by = 2)) +
             guides(color = guide_legend(override.aes = list(size = 2))) +
-            scale_y_continuous(name = " Average Energy produced, in Millions (MWh)", 
+            scale_y_continuous(name = " Average Energy produced (MWh)", 
                                 labels = addUnits)
         
     })
@@ -102,7 +103,7 @@ function(input, output, session) {
         labs(color = "Energy Source") +
         scale_x_continuous(name = "Year", breaks = seq(1990, 2019, by = 2)) +
         guides(color = guide_legend(override.aes = list(size = 2))) +
-        scale_y_continuous(name = " Energy produced",  labels = addUnits)
+        scale_y_continuous(name = " Energy share of total",  labels = addUnits)
       
     })
     
@@ -151,7 +152,7 @@ function(input, output, session) {
       geom_bar(position = "stack", stat = 'identity') +
       theme( text = element_text(size = 12, family = 'sans'), plot.title = element_text(hjust = 0.5, face = "bold"), legend.position = "none") +
       labs(fill = "Energy Source") +
-      scale_x_continuous("Year", breaks = seq(minx, maxx, 10), labels = seq(minx, maxx, 10)) +
+      scale_x_continuous("Year", breaks = seq(minx, maxx, 6), labels = seq(minx, maxx, 6)) +
       scale_y_continuous("Energy produced", labels = addUnits)
     
   })
@@ -183,7 +184,7 @@ function(input, output, session) {
       theme( text = element_text(size = 12, family = 'sans'), plot.title = element_text(hjust = 0.5, face = "bold"), 
              legend.title = element_blank(), legend.text = element_text(size = 10)) +
       labs(fill = "Energy Source") +
-      scale_x_continuous("Year", breaks = seq(minx, maxx, 10), labels = seq(minx, maxx, 10)) +
+      scale_x_continuous("Year", breaks = seq(minx, maxx, 6), labels = seq(minx, maxx, 6)) +
       scale_y_continuous("Percentage of total", labels = addUnits)
     
   })
@@ -215,7 +216,7 @@ function(input, output, session) {
       geom_line(size = 1) +
       theme( text = element_text(size = 12, family = 'sans'), plot.title = element_text(hjust = 0.5, face = "bold"), legend.position = "none") +
       labs(fill = "Energy Source") +
-      scale_x_continuous("Year", breaks = seq(minx, maxx, 10), labels = seq(minx, maxx, 10)) +
+      scale_x_continuous("Year", breaks = seq(minx, maxx, 6), labels = seq(minx, maxx, 6)) +
       scale_y_continuous("Energy produced", labels = addUnits)
     
   })
@@ -247,14 +248,18 @@ function(input, output, session) {
       geom_line(size = 1) +
       theme( text = element_text(size = 12, family = 'sans'), plot.title = element_text(hjust = 0.5, face = "bold"), legend.position = "none") +
       labs(fill = "Energy Source") +
-      scale_x_continuous("Year", breaks = seq(minx, maxx, 10), labels = seq(minx, maxx, 10)) +
+      scale_x_continuous("Year", breaks = seq(minx, maxx, 6), labels = seq(minx, maxx, 6)) +
       scale_y_continuous("Percentage of total", labels = addUnits)
     
   })
   
   output$compare15 <- DT::renderDataTable( # table top right
     class = 'cell-border stripe',
-    options = list(columnDefs = list(list(targets = c(4,5), searchable = FALSE, className = 'dt-right')), dom = 'tp', pageLength = 5),
+    options = list(columnDefs = list(list(targets = c(4,5), searchable = FALSE, className = 'dt-right')), dom = 'tp', pageLength = 5,
+                   initComplete = JS(
+                     "function(settings, json) {",
+                     "$(this.api().table().header()).css({'background-color': '#000', 'color': '#fff'});",
+                     "}")),
     { 
       st <- setNames(c(state.abb, "DC", "US-TOTAL"), c(state.name, "Washington D.C.", "US Total"))[input$zone1]
       
@@ -299,7 +304,7 @@ function(input, output, session) {
       geom_bar(position = "stack", stat = 'identity') +
       theme( text = element_text(size = 12, family = 'sans'), plot.title = element_text(hjust = 0.5, face = "bold"), legend.position = "none") +
       labs(fill = "Energy Source") +
-      scale_x_continuous("Year", breaks = seq(minx, maxx, 10), labels = seq(minx, maxx, 10)) +
+      scale_x_continuous("Year", breaks = seq(minx, maxx, 6), labels = seq(minx, maxx, 6)) +
       scale_y_continuous("Energy produced", labels = addUnits)
     
   })
@@ -331,7 +336,7 @@ function(input, output, session) {
       theme( text = element_text(size = 12, family = 'sans'), plot.title = element_text(hjust = 0.5, face = "bold"),
              legend.title = element_blank(), legend.text = element_text(size = 10)) +
       labs(fill = "Energy Source") +
-      scale_x_continuous("Year", breaks = seq(minx, maxx, 10), labels = seq(minx, maxx, 10)) +
+      scale_x_continuous("Year", breaks = seq(minx, maxx, 6), labels = seq(minx, maxx, 6)) +
       scale_y_continuous("Percentage of total", labels = addUnits)
     
   })
@@ -362,7 +367,7 @@ function(input, output, session) {
       geom_line(size = 1) +
       theme( text = element_text(size = 12, family = 'sans'), plot.title = element_text(hjust = 0.5, face = "bold"), legend.position = "none") +
       labs(fill = "Energy Source") +
-      scale_x_continuous("Year", breaks = seq(minx, maxx, 10), labels = seq(minx, maxx, 10)) +
+      scale_x_continuous("Year", breaks = seq(minx, maxx, 6), labels = seq(minx, maxx, 6)) +
       scale_y_continuous("Energy produced", labels = addUnits)
     
   })
@@ -394,14 +399,18 @@ function(input, output, session) {
       geom_line(size = 1) +
       theme( text = element_text(size = 12, family = 'sans'), plot.title = element_text(hjust = 0.5, face = "bold"), legend.position = "none") +
       labs(fill = "Energy Source") +
-      scale_x_continuous("Year", breaks = seq(minx, maxx, 10), labels = seq(minx, maxx, 10)) +
+      scale_x_continuous("Year", breaks = seq(minx, maxx, 6), labels = seq(minx, maxx, 6)) +
       scale_y_continuous("Percentage of total", labels = addUnits)
     
   })
   
   output$compare25 <- DT::renderDataTable( # Table bottom right
     class = 'cell-border stripe',
-    options = list(columnDefs = list(list(targets = c(4,5), searchable = FALSE, className = 'dt-right')), dom = 'tp', pageLength = 5),
+    options = list(columnDefs = list(list(targets = c(4,5), searchable = FALSE, className = 'dt-right')), dom = 'tp', pageLength = 5,
+                   initComplete = JS(
+                     "function(settings, json) {",
+                     "$(this.api().table().header()).css({'background-color': '#000', 'color': '#fff'});",
+                     "}")),
     { 
       st <- setNames(c(state.abb, "DC", "US-TOTAL"), c(state.name, "Washington D.C.", "US Total"))[input$zone2]
       
