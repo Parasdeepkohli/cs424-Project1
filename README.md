@@ -7,6 +7,7 @@ Required libraries:
 - ggplot2
 - DT
 - usmap
+- scales
 
 Please install the required libraries with 'install.packages("<library>") in the console.
 
