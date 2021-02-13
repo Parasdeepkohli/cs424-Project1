@@ -33,7 +33,7 @@ function(input, output, session) {
             geom_bar(position = "stack", stat = "identity", width = 0.6) +
             ggtitle("Amount of energy produced by source in the US") +
             theme(
-                text=element_text(size = 15, family = 'sans'), 
+                text=element_text(size = 14, family = 'sans'), 
                 plot.title = element_text(hjust = 0.5, face = 'bold'),
                 axis.title = element_text(size = 18),
                 legend.text = element_text(size = 16, family = 'sans'),
@@ -51,7 +51,7 @@ function(input, output, session) {
             geom_bar(position = "fill", stat = "identity", width = 0.6) +
             ggtitle("Percentage of total energy produced by source in the US") +
             theme(
-                text=element_text(size = 15, family = 'sans'), 
+                text=element_text(size = 14, family = 'sans'), 
                 plot.title = element_text(hjust = 0.5, face = 'bold'),
                 axis.title = element_text(size = 18),
                 legend.text = element_text(size = 16, family = 'sans'),
@@ -104,7 +104,7 @@ function(input, output, session) {
       
     })
     
-  output$table1 = DT::renderDataTable(
+  output$table1 <- DT::renderDataTable(
     class = 'cell-border stripe',
     filter = 'top',
     options = list(columnDefs = list(list(targets = c(3,4), searchable = FALSE, className = 'dt-right'))),
@@ -116,5 +116,102 @@ function(input, output, session) {
       
     }, 
     colnames = c("Year", "Energy Source", "Energy generated (MWh)", "Percentage of total energy produced per year (%)")
+  )
+  
+  
+  # Block for part 2 outputs
+  
+  
+  
+  output$compare11 <- renderPlot({ # Bar plot top left
+
+    st <- setNames(c(state.abb, "DC", "US-TOTAL"), c(state.name, "Washington D.C.", "US Total"))[input$zone1]
+    chosen_data <- subset(US_state_final, YEAR == input$year1 & STATE == st & ENERGY.SOURCE == input$source1)
+    ggplot(chosen_data, aes(input$year1, y = GENERATION..Megawatthours., fill = ENERGY.SOURCE)) +
+      scale_fill_manual( # Consistent color scheme between visualizations
+        values = c("Coal" = "#F8766D", "GeoTh" = "#D39200","Hydro" = "#93AA00","N Gas" = "#00BA38","Nuclear" = "#00C19F","Petrol" = "00B9E3","Solar" = "#619CFF","Wind" = "#DB72FB","wood" = "FF61C3"
+        )) +
+      geom_bar(stat = 'identity', width = 0.4) +
+    theme( text = element_text(size = 13, family = 'sans'), legend.position = 'none') +
+      xlab("Year")+
+      labs("Energy Source") +
+      scale_y_continuous("Energy produced (MWh)", labels = addUnits)
+    
+  })
+  
+  output$compare12 <- renderPlot({ # Bar plot top middle
+    
+    st <- setNames(c(state.abb, "DC", "US-TOTAL"), c(state.name, "Washington D.C.", "US Total"))[input$zone1]
+    chosen_data <- subset(US_state_final, YEAR == input$year1 & STATE == st & ENERGY.SOURCE == input$source1)
+    ggplot(chosen_data, aes(input$year1, y = Percentages, fill = ENERGY.SOURCE)) +
+      scale_fill_manual( # Consistent color scheme between visualizations
+        values = c("Coal" = "#F8766D", "GeoTh" = "#D39200","Hydro" = "#93AA00","N Gas" = "#00BA38","Nuclear" = "#00C19F","Petrol" = "00B9E3","Solar" = "#619CFF","Wind" = "#DB72FB","wood" = "FF61C3"
+        )) +
+      geom_bar(stat = 'identity', width = 0.5) +
+      theme( text = element_text(size = 13, family = 'sans')) +
+      labs(fill = "Energy Source") +
+      xlab("Year") +
+      scale_y_continuous("Energy produced (MWh)", labels = addUnits)
+    
+  })
+  
+  output$compare13 <- DT::renderDataTable( # table top right
+    class = 'cell-border stripe',
+    options = list(columnDefs = list(list(targets = c(4,5), searchable = FALSE, className = 'dt-right'))),
+    { 
+      st <- setNames(c(state.abb, "DC", "US-TOTAL"), c(state.name, "Washington D.C.", "US Total"))[input$zone1]
+      chosen_data <- subset(US_state_final, YEAR == input$year1 & STATE == st & ENERGY.SOURCE == input$source1)
+      chosen_data$GENERATION..Megawatthours. <- addCommas(chosen_data$GENERATION..Megawatthours.)
+      chosen_data$Percentages <- signif(chosen_data$Percentages, digits = 2)
+      chosen_data[, c("YEAR", "STATE", "ENERGY.SOURCE", "GENERATION..Megawatthours.", "Percentages")]
+      
+    }, 
+    colnames = c("Year", "State", "Source", "(MWh)", "(%)")
+  )
+  
+  output$compare21 <- renderPlot({ # Bar plot bottom left
+    
+    st <- setNames(c(state.abb, "DC", "US-TOTAL"), c(state.name, "Washington D.C.", "US Total"))[input$zone2]
+    chosen_data <- subset(US_state_final, YEAR == input$year2 & STATE == st & ENERGY.SOURCE == input$source2)
+    ggplot(chosen_data, aes(input$year2, y = GENERATION..Megawatthours., fill = ENERGY.SOURCE)) +
+      scale_fill_manual( # Consistent color scheme between visualizations
+        values = c("Coal" = "#F8766D", "GeoTh" = "#D39200","Hydro" = "#93AA00","N Gas" = "#00BA38","Nuclear" = "#00C19F","Petrol" = "00B9E3","Solar" = "#619CFF","Wind" = "#DB72FB","wood" = "FF61C3"
+        )) +
+      geom_bar(stat = 'identity', width = 0.4) +
+      theme( text = element_text(size = 13, family = 'sans'), legend.position = 'none') +
+      xlab("Year")+
+      labs("Energy Source") +
+      scale_y_continuous("Energy produced (MWh)", labels = addUnits)
+    
+  })
+  
+  output$compare22 <- renderPlot({ # Bar plot bottom middle
+    
+    st <- setNames(c(state.abb, "DC", "US-TOTAL"), c(state.name, "Washington D.C.", "US Total"))[input$zone2]
+    chosen_data <- subset(US_state_final, YEAR == input$year2 & STATE == st & ENERGY.SOURCE == input$source2)
+    ggplot(chosen_data, aes(input$year2, y = Percentages, fill = ENERGY.SOURCE)) +
+      scale_fill_manual( # Consistent color scheme between visualizations
+        values = c("Coal" = "#F8766D", "GeoTh" = "#D39200","Hydro" = "#93AA00","N Gas" = "#00BA38","Nuclear" = "#00C19F","Petrol" = "00B9E3","Solar" = "#619CFF","Wind" = "#DB72FB","wood" = "FF61C3"
+        )) +
+      geom_bar(stat = 'identity', width = 0.5) +
+      theme( text = element_text(size = 13, family = 'sans')) +
+      labs(fill = "Energy Source") +
+      xlab("Year") +
+      scale_y_continuous("Energy produced (MWh)", labels = addUnits)
+    
+  })
+  
+  output$compare23 <- DT::renderDataTable( # Table bottom right
+    class = 'cell-border stripe',
+    options = list(columnDefs = list(list(targets = c(4,5), searchable = FALSE, className = 'dt-right'))),
+    { 
+      st <- setNames(c(state.abb, "DC", "US-TOTAL"), c(state.name, "Washington D.C.", "US Total"))[input$zone2]
+      chosen_data <- subset(US_state_final, YEAR == input$year2 & STATE == st & ENERGY.SOURCE == input$source2)
+      chosen_data$GENERATION..Megawatthours. <- addCommas(chosen_data$GENERATION..Megawatthours.)
+      chosen_data$Percentages <- signif(chosen_data$Percentages, digits = 2)
+      chosen_data[, c("YEAR", "STATE", "ENERGY.SOURCE", "GENERATION..Megawatthours.", "Percentages")]
+      
+    },
+    colnames = c("Year", "State", "Source", "(MWh)", "(%)")
   )
 }
