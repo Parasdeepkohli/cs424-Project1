@@ -31,3 +31,5 @@ You'll need to "connect" your Shiny account to Rstudio. The steps to do that are
 1. Open Rstudio
 2. Go to "Tools -> Global options"
 3. In the "publishing" tab, select "connect"
+
+ShinyAPP link: https://parasdeepkohli.shinyapps.io/Project-1/
