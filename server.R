@@ -83,7 +83,10 @@ function(input, output, session) {
             scale_x_continuous(name = "Year", breaks = seq(1990, 2019, by = 2)) +
             guides(color = guide_legend(override.aes = list(size = 2))) +
             scale_y_continuous(name = " Average Energy produced (MWh)", 
-                                labels = addUnits)
+                                labels = addUnits) +
+          scale_color_manual( # Consistent color scheme between visualizations
+            values = c("Coal" = "#F8766D", "GeoTh" = "#D39200","Hydro" = "#93AA00","N Gas" = "#00BA38","Nuclear" = "#00C19F","Petrol" = "#00B9E3","Solar" = "#619CFF","Wind" = "#DB72FB","Wood" = "#FF61C3"
+            ))
         
     })
     
@@ -103,7 +106,10 @@ function(input, output, session) {
         labs(color = "Energy Source") +
         scale_x_continuous(name = "Year", breaks = seq(1990, 2019, by = 2)) +
         guides(color = guide_legend(override.aes = list(size = 2))) +
-        scale_y_continuous(name = " Energy share of total",  labels = addUnits)
+        scale_y_continuous(name = " Energy share of total",  labels = addUnits) +
+        scale_color_manual( # Consistent color scheme between visualizations
+          values = c("Coal" = "#F8766D", "GeoTh" = "#D39200","Hydro" = "#93AA00","N Gas" = "#00BA38","Nuclear" = "#00C19F","Petrol" = "#00B9E3","Solar" = "#619CFF","Wind" = "#DB72FB","Wood" = "#FF61C3"
+          ))
       
     })
     
